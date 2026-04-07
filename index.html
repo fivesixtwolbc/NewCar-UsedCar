@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Financial Strategy Dashboard</title>
+    <title>Household Vehicle Strategy & Cash Flow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -18,7 +18,10 @@
 <body class="p-8">
 
     <div class="max-w-5xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Household Vehicle Strategy & Cash Flow</h1>
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Welcome to New Car / Used Car</h1>
+            <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
+        </header>
 
         <div class="card">
             <h2 class="text-2xl font-semibold mb-4">1. New Car: HYSA Payment Hub (36-Month Loan)</h2>
@@ -26,7 +29,7 @@
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$550</span></label>
-                <input type="range" id="newContrib" min="530" max="600" step="10" value="550" class="w-full mt-2 cursor-pointer">
+                <input type="range" id="newContrib" min="400" max="600" step="10" value="550" class="w-full mt-2 cursor-pointer">
             </div>
 
             <div class="grid grid-cols-3 gap-4 mb-6">
@@ -85,12 +88,60 @@
             </div>
             <canvas id="transitChart" height="100"></canvas>
         </div>
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4">4. Custom Loan Amortization Calculator</h2>
+            <p class="text-gray-600 mb-6">Test specific loan amounts and rates to see how principal and interest break down over time.</p>
+            
+            <form id="loan-form" aria-labelledby="loan-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6">
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700">Loan Amount ($):</label>
+                    <input type="number" id="amount" name="amount" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                </div>
+                <div>
+                    <label for="rate" class="block text-sm font-medium text-gray-700">Interest Rate (%):</label>
+                    <input type="number" id="rate" name="rate" step="0.01" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                </div>
+                <div>
+                    <label for="years" class="block text-sm font-medium text-gray-700">Loan Term (years):</label>
+                    <input type="number" id="years" name="years" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                </div>
+                <div>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">Calculate</button>
+                </div>
+            </form>
+            
+            <div id="results" role="alert" class="mb-6"></div>
+
+            <div id="schedules" class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment #</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Principal</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interest</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Enter loan details above to generate schedule.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer class="text-center mt-12 mb-8 text-gray-500 text-sm">
+            <p>&copy; 2026 New Car / Used Car</p>
+        </footer>
+
     </div>
 
     <script>
         const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
 
-        // Core Constants
+        // --- Simulators 1 & 2 Logic ---
         const hysaApy = 0.0325;
         const newPayment = 1042.06; const newTerm = 36; const newMaint = 3938; const newVal = 16500;
         const cpoPayment = 292.55; const cpoTerm = 63; const cpoMaint = 6050; const cpoVal = 11500;
@@ -184,13 +235,60 @@
             transitChart.update();
         }
 
-        // Event Listeners
+        // Event Listeners for Simulators
         document.getElementById('newContrib').addEventListener('input', updateNew);
         document.getElementById('cpoContrib').addEventListener('input', updateCpo);
         document.getElementById('fuelInput').addEventListener('input', updateTransit);
         document.getElementById('insInput').addEventListener('input', updateTransit);
 
-        // Init
+        // --- Custom Amortization Logic ---
+        document.getElementById('loan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const principal = parseFloat(document.getElementById('amount').value);
+            const annualRate = parseFloat(document.getElementById('rate').value);
+            const years = parseFloat(document.getElementById('years').value);
+
+            // Edge case: 0% interest
+            let monthlyPayment;
+            const monthlyRate = (annualRate / 100) / 12;
+            const totalPayments = years * 12;
+
+            if (monthlyRate === 0) {
+                monthlyPayment = principal / totalPayments;
+            } else {
+                monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / (Math.pow(1 + monthlyRate, totalPayments) - 1);
+            }
+
+            // Display Results Summary
+            document.getElementById('results').innerHTML = `<p class="font-bold text-xl mt-4 text-blue-600 border-l-4 border-blue-600 pl-4">Calculated Monthly Payment: ${formatCurrency(monthlyPayment)}</p>`;
+
+            // Generate Table Rows
+            let currentBalance = principal;
+            let tableHtml = '';
+
+            for (let i = 1; i <= totalPayments; i++) {
+                let interestPayment = currentBalance * monthlyRate;
+                let principalPayment = monthlyPayment - interestPayment;
+                currentBalance -= principalPayment;
+
+                // Catch minor JS rounding errors at the end of the loan
+                if (currentBalance < 0.01) currentBalance = 0;
+
+                tableHtml += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${i}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(principalPayment)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(interestPayment)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${currentBalance === 0 ? 'text-green-600' : 'text-gray-900'}">${formatCurrency(currentBalance)}</td>
+                    </tr>
+                `;
+            }
+
+            document.getElementById('schedule-body').innerHTML = tableHtml;
+        });
+
+        // Initialize Dashboards on load
         initCharts();
         updateNew();
         updateCpo();
