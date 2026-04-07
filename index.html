@@ -106,7 +106,7 @@
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-green-600">$350</span></label>
-                <input type="range" id="cpoContrib" min="300" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
+                <input type="range" id="cpoContrib" min="250" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
             </div>
 
             <div class="grid grid-cols-3 gap-4 mb-6">
@@ -191,7 +191,7 @@
             <h3 class="text-xl font-bold text-gray-800 border-t border-gray-200 pt-8 mb-4">Vehicle Residual Values & Net Equity</h3>
             <p class="text-sm text-gray-500 mb-6">Depreciation is calculated automatically based on the Out-The-Door price sliders at the top of the dashboard.</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="p-5 bg-white rounded-xl border border-gray-200 shadow-sm text-center">
                     <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide mb-2">Month 36 Benchmark</h3>
                     <p class="text-xs text-gray-500 mb-2">New Car loan completed.</p>
@@ -217,6 +217,35 @@
                             <div class="text-xl font-black text-green-400" id="resCpo63_2"></div>
                             <p class="text-xs text-gray-400">CPO Car</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-gray-800 border-t border-gray-200 pt-8 mb-4">Total Net Wealth (HYSA Cash + Vehicle Equity)</h3>
+            <p class="text-sm text-gray-500 mb-6">Combines the remaining liquid cash in your Payment Hub with the depreciated value of the vehicle at both major milestones. <strong>These totals will change dynamically when you adjust your Monthly Checking Contribution sliders above!</strong></p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 shadow-sm">
+                    <h4 class="font-bold text-gray-800 text-lg border-b border-gray-200 pb-2 mb-4">Month 36 (New Car Paid Off)</h4>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-gray-600 font-semibold">New Car Strategy:</span>
+                        <span class="text-2xl font-black text-blue-600" id="wealthNew36"></span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 font-semibold">CPO Car Strategy:</span>
+                        <span class="text-2xl font-black text-green-600" id="wealthCpo36"></span>
+                    </div>
+                </div>
+
+                <div class="p-5 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-gray-700 shadow-sm text-white">
+                    <h4 class="font-bold text-gray-100 text-lg border-b border-gray-700 pb-2 mb-4">Month 63 (CPO Paid Off)</h4>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-gray-300 font-semibold">New Car Strategy:</span>
+                        <span class="text-2xl font-black text-blue-400" id="wealthNew63"></span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-300 font-semibold">CPO Car Strategy:</span>
+                        <span class="text-2xl font-black text-green-400" id="wealthCpo63"></span>
                     </div>
                 </div>
             </div>
@@ -281,6 +310,7 @@
         // Dynamic Global Variables
         let newVal36 = 0;
         let newVal63 = 0;
+        let cpoVal36 = 0; // Added for the Month 36 Net Wealth check
         let cpoVal63 = 0;
         let newPayment = 0;
         let cpoPayment = 0;
@@ -352,6 +382,7 @@
             // Calculate Dynamic Depreciation Residuals
             newVal36 = newPrice * 0.65; // Retains ~65% at 3 years
             newVal63 = newPrice * 0.445; // Retains ~44.5% at 5.25 years
+            cpoVal36 = cpoPrice * 0.60; // Retains ~60% at 3 years
             cpoVal63 = cpoPrice * 0.426; // Retains ~42.6% at 5.25 years
 
             document.getElementById('resNew36').innerText = formatCurrency(newVal36);
@@ -373,10 +404,12 @@
             document.getElementById('newMinBal').innerText = formatCurrency(sim.min);
             document.getElementById('newMinBal').className = `metric ${sim.min < 0 ? 'danger' : 'success'}`;
             document.getElementById('newFinalCash').innerText = formatCurrency(sim.final);
-            
-            // Net Wealth uses the dynamic 63-month residual value for the New Car
             document.getElementById('newNetWealth').innerText = formatCurrency(sim.final + newVal63);
             
+            // Update the new 36 and 63 month Total Net Wealth cards
+            document.getElementById('wealthNew36').innerText = formatCurrency(sim.history[36] + newVal36);
+            document.getElementById('wealthNew63').innerText = formatCurrency(sim.history[63] + newVal63);
+
             newChart.data.datasets[0].data = sim.history;
             newChart.update();
         }
@@ -388,10 +421,12 @@
             
             document.getElementById('cpoMinBal').innerText = formatCurrency(sim.min);
             document.getElementById('cpoFinalCash').innerText = formatCurrency(sim.final);
-            
-            // Net Wealth uses the dynamic 63-month residual value for the CPO Car
             document.getElementById('cpoNetWealth').innerText = formatCurrency(sim.final + cpoVal63);
             
+            // Update the new 36 and 63 month Total Net Wealth cards
+            document.getElementById('wealthCpo36').innerText = formatCurrency(sim.history[36] + cpoVal36);
+            document.getElementById('wealthCpo63').innerText = formatCurrency(sim.history[63] + cpoVal63);
+
             cpoChart.data.datasets[0].data = sim.history;
             cpoChart.update();
         }
@@ -424,78 +459,4 @@
 
             // --- 63-Month Calculations ---
             const t63NewTotal = (newPayment * 36) + (mNewMaint * 63) + (mFuel * 63) + (mIns * 63);
-            const t63CpoTotal = (cpoPayment * 63) + (mCpoMaint * 63) + (mFuel * 63) + (mIns * 63);
-
-            document.getElementById('t63NewMonthly').innerText = formatCurrency(t63NewTotal / 63);
-            document.getElementById('t63NewTotal').innerText = formatCurrency(t63NewTotal);
-            document.getElementById('t63CpoMonthly').innerText = formatCurrency(t63CpoTotal / 63);
-            document.getElementById('t63CpoTotal').innerText = formatCurrency(t63CpoTotal);
-
-            // 36-Month Chart Data Update
-            transitChart36.data.datasets = [
-                { label: 'Car Payments', data: [newPayment * 36, cpoPayment * 36], backgroundColor: '#3b82f6' },
-                { label: 'Fuel', data: [mFuel * 36, mFuel * 36], backgroundColor: '#f59e0b' },
-                { label: 'Insurance', data: [mIns * 36, mIns * 36], backgroundColor: '#8b5cf6' },
-                { label: 'Maintenance', data: [mNewMaint * 36, mCpoMaint * 36], backgroundColor: '#ef4444' }
-            ];
-            transitChart36.update();
-
-            // 63-Month Chart Data Update
-            transitChart63.data.datasets = [
-                { label: 'Car Payments', data: [newPayment * 36, cpoPayment * 63], backgroundColor: '#3b82f6' },
-                { label: 'Fuel', data: [mFuel * 63, mFuel * 63], backgroundColor: '#f59e0b' },
-                { label: 'Insurance', data: [mIns * 63, mIns * 63], backgroundColor: '#8b5cf6' },
-                { label: 'Maintenance', data: [mNewMaint * 63, mCpoMaint * 63], backgroundColor: '#ef4444' }
-            ];
-            transitChart63.update();
-        }
-
-        // Global Event Listeners
-        document.getElementById('newPriceInput').addEventListener('input', updateAll);
-        document.getElementById('cpoPriceInput').addEventListener('input', updateAll);
-        
-        document.getElementById('newContrib').addEventListener('input', updateNew);
-        document.getElementById('cpoContrib').addEventListener('input', updateCpo);
-        
-        document.getElementById('fuelInput').addEventListener('input', updateTransit);
-        document.getElementById('insInput').addEventListener('input', updateTransit);
-        document.getElementById('maintNewInput').addEventListener('input', updateTransit);
-        document.getElementById('maintCpoInput').addEventListener('input', updateTransit);
-
-        // --- Custom Amortization Logic ---
-        document.getElementById('loan-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const principal = parseFloat(document.getElementById('amount').value);
-            const annualRate = parseFloat(document.getElementById('rate').value);
-            const totalPayments = parseFloat(document.getElementById('months').value); 
-            let monthlyPayment = calcLoanPayment(principal, annualRate, totalPayments);
-
-            document.getElementById('results').innerHTML = `<p class="font-bold text-xl mt-4 text-blue-600 border-l-4 border-blue-600 pl-4">Calculated Monthly Payment: ${formatCurrency(monthlyPayment)}</p>`;
-
-            let currentBalance = principal;
-            let tableHtml = '';
-
-            for (let i = 1; i <= totalPayments; i++) {
-                let interestPayment = currentBalance * ((annualRate / 100) / 12);
-                let principalPayment = monthlyPayment - interestPayment;
-                currentBalance -= principalPayment;
-                if (currentBalance < 0.01) currentBalance = 0;
-
-                tableHtml += `
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${i}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(principalPayment)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(interestPayment)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${currentBalance === 0 ? 'text-green-600' : 'text-gray-900'}">${formatCurrency(currentBalance)}</td>
-                    </tr>
-                `;
-            }
-            document.getElementById('schedule-body').innerHTML = tableHtml;
-        });
-
-        // Initialize Dashboards on load
-        initCharts();
-        updateAll(); // Triggers the first full calculation pipeline
-    </script>
-</body>
-</html>
+            const t63CpoTotal = (cpoPayment * 63) + (mCpoMaint * 63)
