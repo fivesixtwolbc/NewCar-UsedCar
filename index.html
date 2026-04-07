@@ -106,7 +106,7 @@
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-green-600">$350</span></label>
-                <input type="range" id="cpoContrib" min="250" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
+                <input type="range" id="cpoContrib" min="300" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
             </div>
 
             <div class="grid grid-cols-3 gap-4 mb-6">
@@ -459,4 +459,78 @@
 
             // --- 63-Month Calculations ---
             const t63NewTotal = (newPayment * 36) + (mNewMaint * 63) + (mFuel * 63) + (mIns * 63);
-            const t63CpoTotal = (cpoPayment * 63) + (mCpoMaint * 63)
+            const t63CpoTotal = (cpoPayment * 63) + (mCpoMaint * 63) + (mFuel * 63) + (mIns * 63);
+
+            document.getElementById('t63NewMonthly').innerText = formatCurrency(t63NewTotal / 63);
+            document.getElementById('t63NewTotal').innerText = formatCurrency(t63NewTotal);
+            document.getElementById('t63CpoMonthly').innerText = formatCurrency(t63CpoTotal / 63);
+            document.getElementById('t63CpoTotal').innerText = formatCurrency(t63CpoTotal);
+
+            // 36-Month Chart Data Update
+            transitChart36.data.datasets = [
+                { label: 'Car Payments', data: [newPayment * 36, cpoPayment * 36], backgroundColor: '#3b82f6' },
+                { label: 'Fuel', data: [mFuel * 36, mFuel * 36], backgroundColor: '#f59e0b' },
+                { label: 'Insurance', data: [mIns * 36, mIns * 36], backgroundColor: '#8b5cf6' },
+                { label: 'Maintenance', data: [mNewMaint * 36, mCpoMaint * 36], backgroundColor: '#ef4444' }
+            ];
+            transitChart36.update();
+
+            // 63-Month Chart Data Update
+            transitChart63.data.datasets = [
+                { label: 'Car Payments', data: [newPayment * 36, cpoPayment * 63], backgroundColor: '#3b82f6' },
+                { label: 'Fuel', data: [mFuel * 63, mFuel * 63], backgroundColor: '#f59e0b' },
+                { label: 'Insurance', data: [mIns * 63, mIns * 63], backgroundColor: '#8b5cf6' },
+                { label: 'Maintenance', data: [mNewMaint * 63, mCpoMaint * 63], backgroundColor: '#ef4444' }
+            ];
+            transitChart63.update();
+        }
+
+        // Global Event Listeners
+        document.getElementById('newPriceInput').addEventListener('input', updateAll);
+        document.getElementById('cpoPriceInput').addEventListener('input', updateAll);
+        
+        document.getElementById('newContrib').addEventListener('input', updateNew);
+        document.getElementById('cpoContrib').addEventListener('input', updateCpo);
+        
+        document.getElementById('fuelInput').addEventListener('input', updateTransit);
+        document.getElementById('insInput').addEventListener('input', updateTransit);
+        document.getElementById('maintNewInput').addEventListener('input', updateTransit);
+        document.getElementById('maintCpoInput').addEventListener('input', updateTransit);
+
+        // --- Custom Amortization Logic ---
+        document.getElementById('loan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const principal = parseFloat(document.getElementById('amount').value);
+            const annualRate = parseFloat(document.getElementById('rate').value);
+            const totalPayments = parseFloat(document.getElementById('months').value); 
+            let monthlyPayment = calcLoanPayment(principal, annualRate, totalPayments);
+
+            document.getElementById('results').innerHTML = `<p class="font-bold text-xl mt-4 text-blue-600 border-l-4 border-blue-600 pl-4">Calculated Monthly Payment: ${formatCurrency(monthlyPayment)}</p>`;
+
+            let currentBalance = principal;
+            let tableHtml = '';
+
+            for (let i = 1; i <= totalPayments; i++) {
+                let interestPayment = currentBalance * ((annualRate / 100) / 12);
+                let principalPayment = monthlyPayment - interestPayment;
+                currentBalance -= principalPayment;
+                if (currentBalance < 0.01) currentBalance = 0;
+
+                tableHtml += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${i}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(principalPayment)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(interestPayment)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${currentBalance === 0 ? 'text-green-600' : 'text-gray-900'}">${formatCurrency(currentBalance)}</td>
+                    </tr>
+                `;
+            }
+            document.getElementById('schedule-body').innerHTML = tableHtml;
+        });
+
+        // Initialize Dashboards on load
+        initCharts();
+        updateAll(); // Triggers the first full calculation pipeline
+    </script>
+</body>
+</html>
