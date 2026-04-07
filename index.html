@@ -13,17 +13,28 @@
         .metric-label { font-size: 0.875rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
         .danger { color: #dc2626; }
         .success { color: #16a34a; }
+        @media print {
+            body { background-color: white; padding: 0; }
+            .card { box-shadow: none; border: 1px solid #e5e7eb; page-break-inside: avoid; }
+            button, input[type="range"] { display: none; }
+            .no-print { display: none; }
+        }
     </style>
 </head>
 <body class="p-8">
 
-    <div class="max-w-5xl mx-auto">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-gray-800">Welcome to New Car / Used Car</h1>
-            <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
+    <div class="max-w-5xl mx-auto relative">
+        <header class="mb-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Welcome to New Car / Used Car</h1>
+                <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
+            </div>
+            <button onclick="window.print()" class="no-print mt-4 md:mt-0 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold py-2 px-4 rounded shadow-sm transition">
+                🖨️ Print / Save PDF
+            </button>
         </header>
 
-        <div class="card bg-gray-800 text-white mb-8">
+        <div class="card bg-gray-800 text-white mb-4">
             <h2 class="text-xl font-bold mb-4 text-gray-100">Global Vehicle Pricing (Adjust to update all simulators)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
@@ -37,6 +48,17 @@
                     <p class="text-xs text-gray-400 mt-1">2024/2025 CPO Subaru Forester</p>
                 </div>
             </div>
+        </div>
+
+        <div class="bg-gray-100 rounded-lg p-4 mb-8 text-xs text-gray-500 border border-gray-200">
+            <strong class="text-gray-700">Key Dashboard Assumptions:</strong>
+            <ul class="list-disc list-inside mt-1 grid grid-cols-1 md:grid-cols-2 gap-1">
+                <li>HYSA Yield: 3.25% APY (compounded monthly)</li>
+                <li>New Car Loan: 0.9% for 36 months</li>
+                <li>CPO Car Loan: 4.24% for 63 months</li>
+                <li>New Car Depreciation: Retains ~65% at 36mo, ~44.5% at 63mo</li>
+                <li>CPO Depreciation: Retains ~60% at 36mo, ~42.6% at 63mo</li>
+            </ul>
         </div>
 
         <div class="card bg-blue-50 border border-blue-200 mb-8">
@@ -64,8 +86,8 @@
             <p class="text-gray-600 mb-4">Calculated at 0.9% APR | $0 Down | $20,000 Starting HYSA</p>
             
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$550</span></label>
-                <input type="range" id="newContrib" min="400" max="600" step="10" value="550" class="w-full mt-2 cursor-pointer">
+                <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$520</span></label>
+                <input type="range" id="newContrib" min="420" max="620" step="10" value="520" class="w-full mt-2 cursor-pointer">
             </div>
 
             <div class="grid grid-cols-3 gap-4 mb-6">
@@ -106,7 +128,7 @@
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-green-600">$350</span></label>
-                <input type="range" id="cpoContrib" min="300" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
+                <input type="range" id="cpoContrib" min="250" max="450" step="10" value="350" class="w-full mt-2 cursor-pointer">
             </div>
 
             <div class="grid grid-cols-3 gap-4 mb-6">
@@ -252,7 +274,7 @@
 
         </div>
 
-        <div class="card">
+        <div class="card no-print">
             <h2 class="text-2xl font-semibold mb-4">4. Custom Loan Amortization Calculator</h2>
             <p class="text-gray-600 mb-6">Test specific loan amounts and rates to see how principal and interest break down over time.</p>
             
@@ -310,7 +332,7 @@
         // Dynamic Global Variables
         let newVal36 = 0;
         let newVal63 = 0;
-        let cpoVal36 = 0; // Added for the Month 36 Net Wealth check
+        let cpoVal36 = 0; 
         let cpoVal63 = 0;
         let newPayment = 0;
         let cpoPayment = 0;
