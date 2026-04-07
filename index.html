@@ -60,7 +60,27 @@
             <canvas id="newChart" height="100"></canvas>
             
             <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
-                <strong>How the math works:</strong> We start with the $20,000 Amex HYSA earning 3.25% APY. Every month, we add your checking contribution (slider above) to the balance, and then subtract the $1,042.06 car payment and estimated maintenance. The chart tracks if your cash balance can survive the heavy 36-month loan period without dropping below zero, before skyrocketing once the car is paid off.
+                <strong>How the math works:</strong> We start with the $20,000 Amex HYSA earning 3.25% APY. Every month, we add your checking contribution (slider above) to the balance, and then subtract the $1,042.06 car payment. <em>(Maintenance is excluded and paid out of operating cash flow).</em> The chart tracks if your cash balance can survive the heavy 36-month loan period without dropping below zero, before skyrocketing once the car is paid off.
+            </div>
+        </div>
+
+        <div class="card bg-green-50 border border-green-200 mb-4">
+            <h3 class="text-lg font-bold text-green-800 mb-2">CPO Capital Allocation</h3>
+            <div class="flex flex-col md:flex-row justify-between items-center text-green-900">
+                <div class="text-center p-4">
+                    <span class="block text-xs uppercase tracking-wide text-green-600 font-semibold">Total Payment Hub</span>
+                    <span class="text-xl font-bold">$20,000</span>
+                </div>
+                <div class="text-xl font-bold text-green-400 hidden md:block">-</div>
+                <div class="text-center p-4">
+                    <span class="block text-xs uppercase tracking-wide text-green-600 font-semibold">CPO Down Payment</span>
+                    <span class="text-xl font-bold">$10,000</span>
+                </div>
+                <div class="text-xl font-bold text-green-400 hidden md:block">=</div>
+                <div class="text-center p-4 bg-white rounded-lg shadow px-6 py-3 border border-green-100">
+                    <span class="block text-xs uppercase tracking-wide text-green-500 font-semibold mb-1">Starting CPO Hub</span>
+                    <span class="text-2xl font-black text-green-700">$10,000</span>
+                </div>
             </div>
         </div>
 
@@ -81,15 +101,26 @@
             <canvas id="cpoChart" height="100"></canvas>
 
             <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
-                <strong>How the math works:</strong> We immediately remove $10,000 from the Amex HYSA to use as a down payment. The remaining $10,000 stays in the account earning 3.25% APY. Every month, we add your checking contribution to the balance, and subtract the much smaller $292.55 car payment and estimated maintenance. Because the payment is lower, the account never risks hitting zero and grows steadily over the 63 months.
+                <strong>How the math works:</strong> We immediately remove $10,000 from the Amex HYSA to use as a down payment. The remaining $10,000 stays in the account earning 3.25% APY. Every month, we add your checking contribution to the balance, and subtract the much smaller $292.55 car payment. <em>(Maintenance is excluded).</em> Because the payment is lower, the account never risks hitting zero and grows steadily over the 63 months.
             </div>
         </div>
 
         <div class="card">
             <h2 class="text-2xl font-semibold mb-4">3. Total Cost of Transit (63-Month Lifecycle)</h2>
-            <p class="text-gray-600 mb-4">True monthly operating costs disconnected from the HYSA capital strategy.</p>
+            <p class="text-gray-600 mb-4">True monthly operating costs disconnected from the HYSA capital strategy. Slide to estimate maintenance, fuel, and insurance.</p>
             
-            <div class="grid grid-cols-2 gap-8 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Annual Maint (New): <span id="maintNewVal" class="font-bold text-blue-600">$750</span></label>
+                    <input type="range" id="maintNewInput" min="0" max="2000" step="50" value="750" class="w-full mt-2 cursor-pointer">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Annual Maint (CPO): <span id="maintCpoVal" class="font-bold text-blue-600">$1,150</span></label>
+                    <input type="range" id="maintCpoInput" min="0" max="3000" step="50" value="1150" class="w-full mt-2 cursor-pointer">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Annual Fuel Cost: <span id="fuelVal" class="font-bold text-blue-600">$1,500</span></label>
                     <input type="range" id="fuelInput" min="800" max="3000" step="50" value="1500" class="w-full mt-2 cursor-pointer">
@@ -100,7 +131,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-8 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                 <div class="p-4 bg-gray-50 rounded border">
                     <h3 class="font-bold text-lg mb-2">New Car (Months 1-36)</h3>
                     <div class="text-3xl font-bold text-gray-800" id="transitNewMonthly"></div>
@@ -171,20 +202,20 @@
 
         // --- Simulators 1 & 2 Logic ---
         const hysaApy = 0.0325;
-        const newPayment = 1042.06; const newTerm = 36; const newMaint = 3938; const newVal = 16500;
-        const cpoPayment = 292.55; const cpoTerm = 63; const cpoMaint = 6050; const cpoVal = 11500;
+        const newPayment = 1042.06; const newTerm = 36; const newVal = 16500;
+        const cpoPayment = 292.55; const cpoTerm = 63; const cpoVal = 11500;
 
-        function simulateHYSA(startCash, contrib, payment, pmtMonths, totalMaint, term = 63) {
+        // Maintenance removed from HYSA flow, it now just calculates capital vs payment
+        function simulateHYSA(startCash, contrib, payment, pmtMonths, term = 63) {
             let bal = startCash;
             let minBal = startCash;
             let history = [startCash];
             const mRate = hysaApy / 12;
-            const mMaint = totalMaint / term;
 
             for (let i = 1; i <= term; i++) {
                 let interest = bal > 0 ? bal * mRate : 0;
                 let pmt = i <= pmtMonths ? payment : 0;
-                bal = bal + interest + contrib - pmt - mMaint;
+                bal = bal + interest + contrib - pmt;
                 if (bal < minBal) minBal = bal;
                 history.push(bal);
             }
@@ -208,7 +239,7 @@
         function updateNew() {
             const contrib = Number(document.getElementById('newContrib').value);
             document.getElementById('newContribVal').innerText = formatCurrency(contrib);
-            const sim = simulateHYSA(20000, contrib, newPayment, newTerm, newMaint);
+            const sim = simulateHYSA(20000, contrib, newPayment, newTerm);
             
             document.getElementById('newMinBal').innerText = formatCurrency(sim.min);
             document.getElementById('newMinBal').className = `metric ${sim.min < 0 ? 'danger' : 'success'}`;
@@ -222,7 +253,7 @@
         function updateCpo() {
             const contrib = Number(document.getElementById('cpoContrib').value);
             document.getElementById('cpoContribVal').innerText = formatCurrency(contrib);
-            const sim = simulateHYSA(10000, contrib, cpoPayment, cpoTerm, cpoMaint);
+            const sim = simulateHYSA(10000, contrib, cpoPayment, cpoTerm);
             
             document.getElementById('cpoMinBal').innerText = formatCurrency(sim.min);
             document.getElementById('cpoFinalCash').innerText = formatCurrency(sim.final);
@@ -235,21 +266,25 @@
         function updateTransit() {
             const fuel = Number(document.getElementById('fuelInput').value);
             const ins = Number(document.getElementById('insInput').value);
+            const maintNew = Number(document.getElementById('maintNewInput').value);
+            const maintCpo = Number(document.getElementById('maintCpoInput').value);
+            
             document.getElementById('fuelVal').innerText = formatCurrency(fuel);
             document.getElementById('insVal').innerText = formatCurrency(ins);
+            document.getElementById('maintNewVal').innerText = formatCurrency(maintNew);
+            document.getElementById('maintCpoVal').innerText = formatCurrency(maintCpo);
 
             const mFuel = fuel / 12; const mIns = ins / 12;
-            const mNewMaint = newMaint / 63; const mCpoMaint = cpoMaint / 63;
+            const mNewMaint = maintNew / 12; const mCpoMaint = maintCpo / 12;
 
             const newMoActive = newPayment + mFuel + mIns + mNewMaint;
-            const newMoPaidOff = mFuel + mIns + mNewMaint;
             const cpoMo = cpoPayment + mFuel + mIns + mCpoMaint;
 
             document.getElementById('transitNewMonthly').innerText = formatCurrency(newMoActive);
             document.getElementById('transitCpoMonthly').innerText = formatCurrency(cpoMo);
 
-            const newLifetime = (newPayment * 36) + newMaint + (fuel * 5.25) + (ins * 5.25);
-            const cpoLifetime = (cpoPayment * 63) + cpoMaint + (fuel * 5.25) + (ins * 5.25);
+            const newLifetime = (newPayment * 36) + (mNewMaint * 63) + (mFuel * 63) + (mIns * 63);
+            const cpoLifetime = (cpoPayment * 63) + (mCpoMaint * 63) + (mFuel * 63) + (mIns * 63);
             
             document.getElementById('transitNewLifetime').innerText = formatCurrency(newLifetime);
             document.getElementById('transitCpoLifetime').innerText = formatCurrency(cpoLifetime);
@@ -268,6 +303,8 @@
         document.getElementById('cpoContrib').addEventListener('input', updateCpo);
         document.getElementById('fuelInput').addEventListener('input', updateTransit);
         document.getElementById('insInput').addEventListener('input', updateTransit);
+        document.getElementById('maintNewInput').addEventListener('input', updateTransit);
+        document.getElementById('maintCpoInput').addEventListener('input', updateTransit);
 
         // --- Custom Amortization Logic ---
         document.getElementById('loan-form').addEventListener('submit', function(e) {
@@ -275,7 +312,7 @@
             
             const principal = parseFloat(document.getElementById('amount').value);
             const annualRate = parseFloat(document.getElementById('rate').value);
-            const totalPayments = parseFloat(document.getElementById('months').value); // Changed to months
+            const totalPayments = parseFloat(document.getElementById('months').value); 
 
             let monthlyPayment;
             const monthlyRate = (annualRate / 100) / 12;
