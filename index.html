@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Financial Strategy Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; }
+        .metric { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
+        .metric-label { font-size: 0.875rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+        .danger { color: #dc2626; }
+        .success { color: #16a34a; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Household Vehicle Strategy & Cash Flow</h1>
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4">1. New Car: HYSA Payment Hub (36-Month Loan)</h2>
+            <p class="text-gray-600 mb-4">2026 Subaru Forester Sport | $37,000 OTD | 0.9% APR | $0 Down | $20,000 Starting HYSA</p>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$550</span></label>
+                <input type="range" id="newContrib" min="530" max="600" step="10" value="550" class="w-full mt-2 cursor-pointer">
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div><div class="metric-label">Min HYSA Balance</div><div id="newMinBal" class="metric"></div></div>
+                <div><div class="metric-label">Final HYSA Cash (Mo 63)</div><div id="newFinalCash" class="metric"></div></div>
+                <div><div class="metric-label">Net Wealth (Mo 63)</div><div id="newNetWealth" class="metric"></div></div>
+            </div>
+            <canvas id="newChart" height="100"></canvas>
+        </div>
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4">2. CPO Car: HYSA Payment Hub (63-Month Loan)</h2>
+            <p class="text-gray-600 mb-4">2024/2025 CPO Forester | $26,500 OTD | 4.24% APR | $10,000 Down | $10,000 Starting HYSA</p>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-blue-600">$350</span></label>
+                <input type="range" id="cpoContrib" min="300" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div><div class="metric-label">Min HYSA Balance</div><div id="cpoMinBal" class="metric"></div></div>
+                <div><div class="metric-label">Final HYSA Cash (Mo 63)</div><div id="cpoFinalCash" class="metric"></div></div>
+                <div><div class="metric-label">Net Wealth (Mo 63)</div><div id="cpoNetWealth" class="metric"></div></div>
+            </div>
+            <canvas id="cpoChart" height="100"></canvas>
+        </div>
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4">3. Total Cost of Transit (63-Month Lifecycle)</h2>
+            <p class="text-gray-600 mb-4">True monthly operating costs disconnected from the HYSA capital strategy.</p>
+            
+            <div class="grid grid-cols-2 gap-8 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Annual Fuel Cost: <span id="fuelVal" class="font-bold text-blue-600">$1,500</span></label>
+                    <input type="range" id="fuelInput" min="800" max="3000" step="50" value="1500" class="w-full mt-2 cursor-pointer">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Annual Insurance: <span id="insVal" class="font-bold text-blue-600">$1,752</span></label>
+                    <input type="range" id="insInput" min="1000" max="3000" step="12" value="1752" class="w-full mt-2 cursor-pointer">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-8 mb-6">
+                <div class="p-4 bg-gray-50 rounded border">
+                    <h3 class="font-bold text-lg mb-2">New Car (Months 1-36)</h3>
+                    <div class="text-3xl font-bold text-gray-800" id="transitNewMonthly"></div>
+                    <div class="text-sm text-gray-500 mt-1">Total out-of-pocket per month</div>
+                    <div class="mt-4 text-sm"><span class="font-semibold">Lifetime (63 mos):</span> <span id="transitNewLifetime"></span></div>
+                </div>
+                <div class="p-4 bg-gray-50 rounded border">
+                    <h3 class="font-bold text-lg mb-2">CPO Car (Months 1-63)</h3>
+                    <div class="text-3xl font-bold text-gray-800" id="transitCpoMonthly"></div>
+                    <div class="text-sm text-gray-500 mt-1">Total out-of-pocket per month</div>
+                    <div class="mt-4 text-sm"><span class="font-semibold">Lifetime (63 mos):</span> <span id="transitCpoLifetime"></span></div>
+                </div>
+            </div>
+            <canvas id="transitChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
+        // Core Constants
+        const hysaApy = 0.0325;
+        const newPayment = 1042.06; const newTerm = 36; const newMaint = 3938; const newVal = 16500;
+        const cpoPayment = 292.55; const cpoTerm = 63; const cpoMaint = 6050; const cpoVal = 11500;
+
+        function simulateHYSA(startCash, contrib, payment, pmtMonths, totalMaint, term = 63) {
+            let bal = startCash;
+            let minBal = startCash;
+            let history = [startCash];
+            const mRate = hysaApy / 12;
+            const mMaint = totalMaint / term;
+
+            for (let i = 1; i <= term; i++) {
+                let interest = bal > 0 ? bal * mRate : 0;
+                let pmt = i <= pmtMonths ? payment : 0;
+                bal = bal + interest + contrib - pmt - mMaint;
+                if (bal < minBal) minBal = bal;
+                history.push(bal);
+            }
+            return { final: bal, min: minBal, history };
+        }
+
+        // Initialize Charts
+        let newChart, cpoChart, transitChart;
+
+        function initCharts() {
+            const ctxNew = document.getElementById('newChart').getContext('2d');
+            newChart = new Chart(ctxNew, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.1 }] }, options: { scales: { y: { grid: { color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : '#e5e7eb', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 } } } } });
+
+            const ctxCpo = document.getElementById('cpoChart').getContext('2d');
+            cpoChart = new Chart(ctxCpo, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.1 }] }, options: { scales: { y: { min: 0 } } } });
+
+            const ctxTransit = document.getElementById('transitChart').getContext('2d');
+            transitChart = new Chart(ctxTransit, { type: 'bar', data: { labels: ['New Car (Active Loan)', 'New Car (Paid Off)', 'CPO Car'], datasets: [] }, options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true } } } });
+        }
+
+        function updateNew() {
+            const contrib = Number(document.getElementById('newContrib').value);
+            document.getElementById('newContribVal').innerText = formatCurrency(contrib);
+            const sim = simulateHYSA(20000, contrib, newPayment, newTerm, newMaint);
+            
+            document.getElementById('newMinBal').innerText = formatCurrency(sim.min);
+            document.getElementById('newMinBal').className = `metric ${sim.min < 0 ? 'danger' : 'success'}`;
+            document.getElementById('newFinalCash').innerText = formatCurrency(sim.final);
+            document.getElementById('newNetWealth').innerText = formatCurrency(sim.final + newVal);
+            
+            newChart.data.datasets[0].data = sim.history;
+            newChart.update();
+        }
+
+        function updateCpo() {
+            const contrib = Number(document.getElementById('cpoContrib').value);
+            document.getElementById('cpoContribVal').innerText = formatCurrency(contrib);
+            const sim = simulateHYSA(10000, contrib, cpoPayment, cpoTerm, cpoMaint);
+            
+            document.getElementById('cpoMinBal').innerText = formatCurrency(sim.min);
+            document.getElementById('cpoFinalCash').innerText = formatCurrency(sim.final);
+            document.getElementById('cpoNetWealth').innerText = formatCurrency(sim.final + cpoVal);
+            
+            cpoChart.data.datasets[0].data = sim.history;
+            cpoChart.update();
+        }
+
+        function updateTransit() {
+            const fuel = Number(document.getElementById('fuelInput').value);
+            const ins = Number(document.getElementById('insInput').value);
+            document.getElementById('fuelVal').innerText = formatCurrency(fuel);
+            document.getElementById('insVal').innerText = formatCurrency(ins);
+
+            const mFuel = fuel / 12; const mIns = ins / 12;
+            const mNewMaint = newMaint / 63; const mCpoMaint = cpoMaint / 63;
+
+            const newMoActive = newPayment + mFuel + mIns + mNewMaint;
+            const newMoPaidOff = mFuel + mIns + mNewMaint;
+            const cpoMo = cpoPayment + mFuel + mIns + mCpoMaint;
+
+            document.getElementById('transitNewMonthly').innerText = formatCurrency(newMoActive);
+            document.getElementById('transitCpoMonthly').innerText = formatCurrency(cpoMo);
+
+            const newLifetime = (newPayment * 36) + newMaint + (fuel * 5.25) + (ins * 5.25);
+            const cpoLifetime = (cpoPayment * 63) + cpoMaint + (fuel * 5.25) + (ins * 5.25);
+            
+            document.getElementById('transitNewLifetime').innerText = formatCurrency(newLifetime);
+            document.getElementById('transitCpoLifetime').innerText = formatCurrency(cpoLifetime);
+
+            transitChart.data.datasets = [
+                { label: 'Car Payment', data: [newPayment, 0, cpoPayment], backgroundColor: '#3b82f6' },
+                { label: 'Fuel', data: [mFuel, mFuel, mFuel], backgroundColor: '#f59e0b' },
+                { label: 'Insurance', data: [mIns, mIns, mIns], backgroundColor: '#8b5cf6' },
+                { label: 'Maintenance', data: [mNewMaint, mNewMaint, mCpoMaint], backgroundColor: '#ef4444' }
+            ];
+            transitChart.update();
+        }
+
+        // Event Listeners
+        document.getElementById('newContrib').addEventListener('input', updateNew);
+        document.getElementById('cpoContrib').addEventListener('input', updateCpo);
+        document.getElementById('fuelInput').addEventListener('input', updateTransit);
+        document.getElementById('insInput').addEventListener('input', updateTransit);
+
+        // Init
+        initCharts();
+        updateNew();
+        updateCpo();
+        updateTransit();
+    </script>
+</body>
+</html>
