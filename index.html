@@ -23,9 +23,29 @@
             <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
         </header>
 
+        <div class="card bg-blue-50 border border-blue-200 mb-8">
+            <h2 class="text-xl font-bold text-blue-800 mb-4">Starting Capital Pool (Amex HYSA)</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center text-blue-900">
+                <div class="text-center p-4">
+                    <span class="block text-sm uppercase tracking-wide text-blue-600 font-semibold">Existing Balance</span>
+                    <span class="text-2xl font-bold">$14,000</span>
+                </div>
+                <div class="text-2xl font-bold text-blue-400 hidden md:block">+</div>
+                <div class="text-center p-4">
+                    <span class="block text-sm uppercase tracking-wide text-blue-600 font-semibold">Insurance Payout</span>
+                    <span class="text-2xl font-bold">$6,000</span>
+                </div>
+                <div class="text-2xl font-bold text-blue-400 hidden md:block">=</div>
+                <div class="text-center p-4 bg-white rounded-lg shadow px-8 py-4 border border-blue-100">
+                    <span class="block text-sm uppercase tracking-wide text-blue-500 font-semibold mb-1">Total Payment Hub</span>
+                    <span class="text-3xl font-black text-blue-700">$20,000</span>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <h2 class="text-2xl font-semibold mb-4">1. New Car: HYSA Payment Hub (36-Month Loan)</h2>
-            <p class="text-gray-600 mb-4">2026 Subaru Forester Sport | $37,000 OTD | 0.9% APR | $0 Down | $20,000 Starting HYSA</p>
+            <p class="text-gray-600 mb-4">2026 Subaru Forester Sport | $37,000 OTD | 0.9% APR | $0 Down</p>
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$550</span></label>
@@ -38,11 +58,15 @@
                 <div><div class="metric-label">Net Wealth (Mo 63)</div><div id="newNetWealth" class="metric"></div></div>
             </div>
             <canvas id="newChart" height="100"></canvas>
+            
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
+                <strong>How the math works:</strong> We start with the $20,000 Amex HYSA earning 3.25% APY. Every month, we add your checking contribution (slider above) to the balance, and then subtract the $1,042.06 car payment and estimated maintenance. The chart tracks if your cash balance can survive the heavy 36-month loan period without dropping below zero, before skyrocketing once the car is paid off.
+            </div>
         </div>
 
         <div class="card">
             <h2 class="text-2xl font-semibold mb-4">2. CPO Car: HYSA Payment Hub (63-Month Loan)</h2>
-            <p class="text-gray-600 mb-4">2024/2025 CPO Forester | $26,500 OTD | 4.24% APR | $10,000 Down | $10,000 Starting HYSA</p>
+            <p class="text-gray-600 mb-4">2024/2025 CPO Forester | $26,500 OTD | 4.24% APR | $10,000 Down</p>
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-blue-600">$350</span></label>
@@ -55,6 +79,10 @@
                 <div><div class="metric-label">Net Wealth (Mo 63)</div><div id="cpoNetWealth" class="metric"></div></div>
             </div>
             <canvas id="cpoChart" height="100"></canvas>
+
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
+                <strong>How the math works:</strong> We immediately remove $10,000 from the Amex HYSA to use as a down payment. The remaining $10,000 stays in the account earning 3.25% APY. Every month, we add your checking contribution to the balance, and subtract the much smaller $292.55 car payment and estimated maintenance. Because the payment is lower, the account never risks hitting zero and grows steadily over the 63 months.
+            </div>
         </div>
 
         <div class="card">
@@ -103,8 +131,8 @@
                     <input type="number" id="rate" name="rate" step="0.01" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
                 </div>
                 <div>
-                    <label for="years" class="block text-sm font-medium text-gray-700">Loan Term (years):</label>
-                    <input type="number" id="years" name="years" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                    <label for="months" class="block text-sm font-medium text-gray-700">Loan Term (months):</label>
+                    <input type="number" id="months" name="months" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
                 </div>
                 <div>
                     <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">Calculate</button>
@@ -133,7 +161,7 @@
         </div>
 
         <footer class="text-center mt-12 mb-8 text-gray-500 text-sm">
-            <p>&copy; 2026 New Car / Used Car</p>
+            <p>&copy; 2026 New Car / Used Car Dashboard</p>
         </footer>
 
     </div>
@@ -247,12 +275,10 @@
             
             const principal = parseFloat(document.getElementById('amount').value);
             const annualRate = parseFloat(document.getElementById('rate').value);
-            const years = parseFloat(document.getElementById('years').value);
+            const totalPayments = parseFloat(document.getElementById('months').value); // Changed to months
 
-            // Edge case: 0% interest
             let monthlyPayment;
             const monthlyRate = (annualRate / 100) / 12;
-            const totalPayments = years * 12;
 
             if (monthlyRate === 0) {
                 monthlyPayment = principal / totalPayments;
@@ -260,10 +286,8 @@
                 monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / (Math.pow(1 + monthlyRate, totalPayments) - 1);
             }
 
-            // Display Results Summary
             document.getElementById('results').innerHTML = `<p class="font-bold text-xl mt-4 text-blue-600 border-l-4 border-blue-600 pl-4">Calculated Monthly Payment: ${formatCurrency(monthlyPayment)}</p>`;
 
-            // Generate Table Rows
             let currentBalance = principal;
             let tableHtml = '';
 
@@ -272,7 +296,6 @@
                 let principalPayment = monthlyPayment - interestPayment;
                 currentBalance -= principalPayment;
 
-                // Catch minor JS rounding errors at the end of the loan
                 if (currentBalance < 0.01) currentBalance = 0;
 
                 tableHtml += `
