@@ -21,17 +21,19 @@
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-8">
 
     <div class="max-w-5xl mx-auto relative">
-        <header class="mb-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Welcome to New Car / Used Car</h1>
-                <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
-            </div>
-            <button onclick="window.print()" class="no-print mt-4 md:mt-0 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold py-2 px-4 rounded shadow-sm transition">
+        
+        <div class="absolute top-0 right-0 no-print">
+            <button onclick="window.print()" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold py-2 px-4 rounded shadow-sm transition">
                 🖨️ Print / Save PDF
             </button>
+        </div>
+
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Welcome to New Car / Used Car</h1>
+            <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
         </header>
 
         <div class="card bg-gray-800 text-white mb-4">
@@ -50,9 +52,9 @@
             </div>
         </div>
 
-        <div class="bg-gray-100 rounded-lg p-4 mb-8 text-xs text-gray-500 border border-gray-200">
-            <strong class="text-gray-700">Key Dashboard Assumptions:</strong>
-            <ul class="list-disc list-inside mt-1 grid grid-cols-1 md:grid-cols-2 gap-1">
+        <div class="bg-gray-100 rounded-lg p-4 mb-8 text-sm text-gray-600 border border-gray-200">
+            <strong class="text-gray-800">Key Dashboard Assumptions:</strong>
+            <ul class="list-disc list-inside mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
                 <li>HYSA Yield: 3.25% APY (compounded monthly)</li>
                 <li>New Car Loan: 0.9% for 36 months</li>
                 <li>CPO Car Loan: 4.24% for 63 months</li>
@@ -64,17 +66,17 @@
         <div class="card bg-blue-50 border border-blue-200 mb-8">
             <h2 class="text-xl font-bold text-blue-800 mb-4">Starting Capital Pool (Amex HYSA)</h2>
             <div class="flex flex-col md:flex-row justify-between items-center text-blue-900">
-                <div class="text-center p-2 md:p-4">
-                    <span class="block text-xs md:text-sm uppercase tracking-wide text-blue-600 font-semibold">Existing Balance</span>
-                    <span class="text-xl md:text-2xl font-bold">$14,000</span>
+                <div class="text-center p-4">
+                    <span class="block text-sm uppercase tracking-wide text-blue-600 font-semibold">Existing Balance</span>
+                    <span class="text-2xl font-bold">$14,000</span>
                 </div>
                 <div class="text-2xl font-bold text-blue-400 hidden md:block">+</div>
-                <div class="text-center p-2 md:p-4">
-                    <span class="block text-xs md:text-sm uppercase tracking-wide text-blue-600 font-semibold">Insurance Payout</span>
-                    <span class="text-xl md:text-2xl font-bold">$6,000</span>
+                <div class="text-center p-4">
+                    <span class="block text-sm uppercase tracking-wide text-blue-600 font-semibold">Insurance Payout</span>
+                    <span class="text-2xl font-bold">$6,000</span>
                 </div>
                 <div class="text-2xl font-bold text-blue-400 hidden md:block">=</div>
-                <div class="text-center p-4 bg-white rounded-lg shadow md:px-8 py-4 border border-blue-100 w-full md:w-auto mt-4 md:mt-0">
+                <div class="text-center p-4 bg-white rounded-lg shadow px-8 py-4 border border-blue-100">
                     <span class="block text-sm uppercase tracking-wide text-blue-500 font-semibold mb-1">Total Payment Hub</span>
                     <span class="text-3xl font-black text-blue-700">$20,000</span>
                 </div>
@@ -83,21 +85,21 @@
 
         <div class="card">
             <h2 class="text-2xl font-semibold mb-2">1. New Car: HYSA Payment Hub (36-Month Loan)</h2>
-            <p class="text-gray-600 mb-4 text-sm">Calculated at 0.9% APR | $0 Down | $20,000 Starting HYSA</p>
+            <p class="text-gray-600 mb-4">Calculated at 0.9% APR | $0 Down | $20,000 Starting HYSA</p>
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$520</span></label>
                 <input type="range" id="newContrib" min="420" max="620" step="10" value="520" class="w-full mt-2 cursor-pointer">
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                <div><div class="metric-label">Min HYSA Bal</div><div id="newMinBal" class="metric text-lg md:text-2xl"></div></div>
-                <div><div class="metric-label">Final Cash (Mo 63)</div><div id="newFinalCash" class="metric text-lg md:text-2xl"></div></div>
-                <div class="col-span-2 md:col-span-1"><div class="metric-label">Net Wealth (Mo 63)</div><div id="newNetWealth" class="metric text-lg md:text-2xl"></div></div>
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div><div class="metric-label">Min HYSA Balance</div><div id="newMinBal" class="metric"></div></div>
+                <div><div class="metric-label">Final HYSA Cash (Mo 63)</div><div id="newFinalCash" class="metric"></div></div>
+                <div><div class="metric-label">Net Wealth (Mo 63)</div><div id="newNetWealth" class="metric"></div></div>
             </div>
             <canvas id="newChart" height="100"></canvas>
             
-            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-xs md:text-sm text-gray-700 border-l-4 border-gray-400">
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
                 <strong>How the math works:</strong> We start with the $20,000 Amex HYSA earning 3.25% APY. Every month, we add your checking contribution to the balance, and then subtract the calculated car payment. <em>(Maintenance is excluded and paid out of operating cash flow).</em> The chart tracks if your cash balance can survive the heavy 36-month loan period without dropping below zero, before skyrocketing once the car is paid off.
             </div>
         </div>
@@ -105,18 +107,18 @@
         <div class="card bg-green-50 border border-green-200 mb-4">
             <h3 class="text-lg font-bold text-green-800 mb-2">CPO Capital Allocation</h3>
             <div class="flex flex-col md:flex-row justify-between items-center text-green-900">
-                <div class="text-center p-2 md:p-4">
-                    <span class="block text-xs uppercase tracking-wide text-green-600 font-semibold">Total Hub</span>
-                    <span class="text-lg md:text-xl font-bold">$20,000</span>
+                <div class="text-center p-4">
+                    <span class="block text-sm uppercase tracking-wide text-green-600 font-semibold">Total Payment Hub</span>
+                    <span class="text-xl font-bold">$20,000</span>
                 </div>
                 <div class="text-xl font-bold text-green-400 hidden md:block">-</div>
-                <div class="text-center p-2 md:p-4">
-                    <span class="block text-xs uppercase tracking-wide text-green-600 font-semibold">CPO Down Payment</span>
-                    <span class="text-lg md:text-xl font-bold">$10,000</span>
+                <div class="text-center p-4">
+                    <span class="block text-sm uppercase tracking-wide text-green-600 font-semibold">CPO Down Payment</span>
+                    <span class="text-xl font-bold">$10,000</span>
                 </div>
                 <div class="text-xl font-bold text-green-400 hidden md:block">=</div>
-                <div class="text-center p-3 md:p-4 bg-white rounded-lg shadow w-full md:w-auto mt-4 md:mt-0 border border-green-100">
-                    <span class="block text-xs uppercase tracking-wide text-green-500 font-semibold mb-1">Starting CPO Hub</span>
+                <div class="text-center p-4 bg-white rounded-lg shadow px-6 py-3 border border-green-100">
+                    <span class="block text-sm uppercase tracking-wide text-green-500 font-semibold mb-1">Starting CPO Hub</span>
                     <span class="text-2xl font-black text-green-700">$10,000</span>
                 </div>
             </div>
@@ -124,64 +126,64 @@
 
         <div class="card">
             <h2 class="text-2xl font-semibold mb-2">2. CPO Car: HYSA Payment Hub (63-Month Loan)</h2>
-            <p class="text-gray-600 mb-4 text-sm">Calculated at 4.24% APR | $10,000 Down | $10,000 Starting HYSA</p>
+            <p class="text-gray-600 mb-4">Calculated at 4.24% APR | $10,000 Down | $10,000 Starting HYSA</p>
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-green-600">$350</span></label>
                 <input type="range" id="cpoContrib" min="250" max="450" step="10" value="350" class="w-full mt-2 cursor-pointer">
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                <div><div class="metric-label">Min HYSA Bal</div><div id="cpoMinBal" class="metric text-lg md:text-2xl"></div></div>
-                <div><div class="metric-label">Final Cash (Mo 63)</div><div id="cpoFinalCash" class="metric text-lg md:text-2xl"></div></div>
-                <div class="col-span-2 md:col-span-1"><div class="metric-label">Net Wealth (Mo 63)</div><div id="cpoNetWealth" class="metric text-lg md:text-2xl"></div></div>
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div><div class="metric-label">Min HYSA Balance</div><div id="cpoMinBal" class="metric"></div></div>
+                <div><div class="metric-label">Final HYSA Cash (Mo 63)</div><div id="cpoFinalCash" class="metric"></div></div>
+                <div><div class="metric-label">Net Wealth (Mo 63)</div><div id="cpoNetWealth" class="metric"></div></div>
             </div>
             <canvas id="cpoChart" height="100"></canvas>
 
-            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-xs md:text-sm text-gray-700 border-l-4 border-gray-400">
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
                 <strong>How the math works:</strong> We immediately remove $10,000 from the Amex HYSA to use as a down payment. The remaining $10,000 stays in the account earning 3.25% APY. Every month, we add your checking contribution to the balance, and subtract the calculated car payment. <em>(Maintenance is excluded).</em> Because the payment is lower, the account never risks hitting zero and grows steadily over the 63 months.
             </div>
         </div>
 
         <div class="card">
             <h2 class="text-2xl font-semibold mb-4">3. Total Cost of Transit (Operating Overhead)</h2>
-            <p class="text-gray-600 mb-6 text-sm">True operating costs disconnected from the HYSA capital strategy. Sliders update the monthly out-of-pocket averages below.</p>
+            <p class="text-gray-600 mb-6">True operating costs disconnected from the HYSA capital strategy. Sliders update the monthly out-of-pocket averages below.</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div class="space-y-4 p-5 bg-blue-50 rounded-lg border border-blue-100">
                     <h3 class="font-bold text-blue-900 border-b border-blue-200 pb-2">New Car Specific Overheads</h3>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual Maint: <span id="maintNewVal" class="font-bold text-blue-600">$500</span></label>
-                        <input type="range" id="maintNewInput" min="0" max="2000" step="50" value="500" class="w-full mt-1 cursor-pointer">
+                        <input type="range" id="maintNewInput" min="0" max="2000" step="50" value="500" class="w-full mt-2 cursor-pointer">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual Insurance: <span id="insNewVal" class="font-bold text-blue-600">$2,200</span></label>
-                        <input type="range" id="insNewInput" min="1000" max="4000" step="50" value="2200" class="w-full mt-1 cursor-pointer">
+                        <input type="range" id="insNewInput" min="1000" max="4000" step="50" value="2200" class="w-full mt-2 cursor-pointer">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual CA Reg: <span id="regNewVal" class="font-bold text-blue-600">$400</span></label>
-                        <input type="range" id="regNewInput" min="100" max="1000" step="10" value="400" class="w-full mt-1 cursor-pointer">
+                        <input type="range" id="regNewInput" min="100" max="1000" step="10" value="400" class="w-full mt-2 cursor-pointer">
                     </div>
                 </div>
 
-                <div class="space-y-4 p-4 bg-green-50 rounded-lg border border-green-100">
+                <div class="space-y-4 p-5 bg-green-50 rounded-lg border border-green-100">
                     <h3 class="font-bold text-green-900 border-b border-green-200 pb-2">CPO Car Specific Overheads</h3>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual Maint: <span id="maintCpoVal" class="font-bold text-green-600">$1,300</span></label>
-                        <input type="range" id="maintCpoInput" min="0" max="3000" step="50" value="1300" class="w-full mt-1 cursor-pointer">
+                        <input type="range" id="maintCpoInput" min="0" max="3000" step="50" value="1300" class="w-full mt-2 cursor-pointer">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual Insurance: <span id="insCpoVal" class="font-bold text-green-600">$1,800</span></label>
-                        <input type="range" id="insCpoInput" min="1000" max="4000" step="50" value="1800" class="w-full mt-1 cursor-pointer">
+                        <input type="range" id="insCpoInput" min="1000" max="4000" step="50" value="1800" class="w-full mt-2 cursor-pointer">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual CA Reg: <span id="regCpoVal" class="font-bold text-green-600">$250</span></label>
-                        <input type="range" id="regCpoInput" min="100" max="1000" step="10" value="250" class="w-full mt-1 cursor-pointer">
+                        <input type="range" id="regCpoInput" min="100" max="1000" step="10" value="250" class="w-full mt-2 cursor-pointer">
                     </div>
                 </div>
             </div>
             
-            <div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="mb-8 p-5 bg-gray-50 rounded-lg border border-gray-200">
                 <label class="block text-sm font-medium text-gray-700 flex justify-between">Annual Fuel Cost (Shared Assumption): <span id="fuelVal" class="font-bold text-gray-800">$1,500</span></label>
                 <input type="range" id="fuelInput" min="800" max="4000" step="50" value="1500" class="w-full mt-2 cursor-pointer">
             </div>
@@ -190,8 +192,8 @@
                 <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
                     <h3 class="font-bold text-blue-900 text-lg border-b border-blue-200 pb-2 mb-3">36-Month Horizon: New Car</h3>
                     <div class="text-3xl font-black text-gray-800" id="t36NewMonthly"></div>
-                    <div class="text-xs text-gray-500 mb-2">Avg Monthly Out-of-Pocket</div>
-                    <div class="bg-white p-3 rounded text-xs text-gray-600 space-y-1 border border-blue-100 shadow-sm mb-4">
+                    <div class="text-sm text-gray-500 mb-3">Avg Monthly Out-of-Pocket</div>
+                    <div class="bg-white p-3 rounded text-sm text-gray-600 space-y-1 border border-blue-100 shadow-sm mb-4">
                         <div class="flex justify-between"><span>Payment:</span> <span id="bNew36Pmt" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Fuel:</span> <span id="bNew36Fuel" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Ins:</span> <span id="bNew36Ins" class="font-semibold"></span></div>
@@ -204,8 +206,8 @@
                 <div class="p-5 bg-green-50 rounded-xl border border-green-100 shadow-sm">
                     <h3 class="font-bold text-green-900 text-lg border-b border-green-200 pb-2 mb-3">36-Month Horizon: CPO Car</h3>
                     <div class="text-3xl font-black text-gray-800" id="t36CpoMonthly"></div>
-                    <div class="text-xs text-gray-500 mb-2">Avg Monthly Out-of-Pocket</div>
-                    <div class="bg-white p-3 rounded text-xs text-gray-600 space-y-1 border border-green-100 shadow-sm mb-4">
+                    <div class="text-sm text-gray-500 mb-3">Avg Monthly Out-of-Pocket</div>
+                    <div class="bg-white p-3 rounded text-sm text-gray-600 space-y-1 border border-green-100 shadow-sm mb-4">
                         <div class="flex justify-between"><span>Payment:</span> <span id="bCpo36Pmt" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Fuel:</span> <span id="bCpo36Fuel" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Ins:</span> <span id="bCpo36Ins" class="font-semibold"></span></div>
@@ -218,8 +220,8 @@
                 <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 shadow-sm opacity-95">
                     <h3 class="font-bold text-blue-900 text-lg border-b border-blue-200 pb-2 mb-3">63-Month Horizon: New Car</h3>
                     <div class="text-3xl font-black text-gray-800" id="t63NewMonthly"></div>
-                    <div class="text-xs text-gray-500 mb-2">Avg Monthly (Blends active & paid-off)</div>
-                    <div class="bg-white p-3 rounded text-xs text-gray-600 space-y-1 border border-blue-100 shadow-sm mb-4">
+                    <div class="text-sm text-gray-500 mb-3">Avg Monthly (Blends active & paid-off)</div>
+                    <div class="bg-white p-3 rounded text-sm text-gray-600 space-y-1 border border-blue-100 shadow-sm mb-4">
                         <div class="flex justify-between"><span>Avg Payment (36 of 63 mo):</span> <span id="bNew63Pmt" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Fuel:</span> <span id="bNew63Fuel" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Ins:</span> <span id="bNew63Ins" class="font-semibold"></span></div>
@@ -232,8 +234,8 @@
                 <div class="p-5 bg-green-50 rounded-xl border border-green-100 shadow-sm opacity-95">
                     <h3 class="font-bold text-green-900 text-lg border-b border-green-200 pb-2 mb-3">63-Month Horizon: CPO Car</h3>
                     <div class="text-3xl font-black text-gray-800" id="t63CpoMonthly"></div>
-                    <div class="text-xs text-gray-500 mb-2">Avg Monthly Out-of-Pocket</div>
-                    <div class="bg-white p-3 rounded text-xs text-gray-600 space-y-1 border border-green-100 shadow-sm mb-4">
+                    <div class="text-sm text-gray-500 mb-3">Avg Monthly Out-of-Pocket</div>
+                    <div class="bg-white p-3 rounded text-sm text-gray-600 space-y-1 border border-green-100 shadow-sm mb-4">
                         <div class="flex justify-between"><span>Payment:</span> <span id="bCpo63Pmt" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Fuel:</span> <span id="bCpo63Fuel" class="font-semibold"></span></div>
                         <div class="flex justify-between"><span>Ins:</span> <span id="bCpo63Ins" class="font-semibold"></span></div>
@@ -246,11 +248,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-8">
                 <div>
-                    <h4 class="text-center font-bold text-gray-600 mb-2 text-sm md:text-base">Total 36-Month Cost Breakdown</h4>
+                    <h4 class="text-center font-bold text-gray-600 mb-2">Total 36-Month Cost Breakdown</h4>
                     <canvas id="transitChart36" height="250"></canvas>
                 </div>
                 <div>
-                    <h4 class="text-center font-bold text-gray-600 mb-2 text-sm md:text-base">Total 63-Month Cost Breakdown</h4>
+                    <h4 class="text-center font-bold text-gray-600 mb-2">Total 63-Month Cost Breakdown</h4>
                     <canvas id="transitChart63" height="250"></canvas>
                 </div>
             </div>
@@ -258,7 +260,7 @@
             <h3 class="text-xl font-bold text-gray-800 border-t border-gray-200 pt-8 mb-4">Vehicle Residual Values & Net Equity</h3>
             <p class="text-sm text-gray-500 mb-6">Depreciation is calculated automatically based on the Out-The-Door price sliders at the top of the dashboard.</p>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="p-5 bg-white rounded-xl border border-gray-200 shadow-sm text-center">
                     <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide mb-2">Month 36 Benchmark</h3>
                     <p class="text-xs text-gray-500 mb-2">New Car loan completed.</p>
@@ -271,7 +273,7 @@
                     <div class="text-3xl font-black text-green-600" id="resCpo63"></div>
                     <p class="text-xs text-gray-400 mt-1">Est. CPO Car Value</p>
                 </div>
-                <div class="p-5 bg-gray-800 rounded-xl border border-gray-700 shadow-sm text-center sm:col-span-2 md:col-span-1">
+                <div class="p-5 bg-gray-800 rounded-xl border border-gray-700 shadow-sm text-center">
                     <h3 class="font-bold text-gray-200 text-sm uppercase tracking-wide mb-2">Month 63 Head-to-Head</h3>
                     <p class="text-xs text-gray-400 mb-2">Remaining Vehicle Equity</p>
                     <div class="flex justify-between items-center px-2 mt-2">
@@ -295,28 +297,71 @@
                 <div class="p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 shadow-sm">
                     <h4 class="font-bold text-gray-800 text-lg border-b border-gray-200 pb-2 mb-4">Month 36 (New Car Paid Off)</h4>
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-gray-600 font-semibold text-sm sm:text-base">New Car Strategy:</span>
-                        <span class="text-xl sm:text-2xl font-black text-blue-600" id="wealthNew36"></span>
+                        <span class="text-gray-600 font-semibold">New Car Strategy:</span>
+                        <span class="text-2xl font-black text-blue-600" id="wealthNew36"></span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600 font-semibold text-sm sm:text-base">CPO Car Strategy:</span>
-                        <span class="text-xl sm:text-2xl font-black text-green-600" id="wealthCpo36"></span>
+                        <span class="text-gray-600 font-semibold">CPO Car Strategy:</span>
+                        <span class="text-2xl font-black text-green-600" id="wealthCpo36"></span>
                     </div>
                 </div>
 
                 <div class="p-5 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-gray-700 shadow-sm text-white">
                     <h4 class="font-bold text-gray-100 text-lg border-b border-gray-700 pb-2 mb-4">Month 63 (CPO Paid Off)</h4>
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-gray-300 font-semibold text-sm sm:text-base">New Car Strategy:</span>
-                        <span class="text-xl sm:text-2xl font-black text-blue-400" id="wealthNew63"></span>
+                        <span class="text-gray-300 font-semibold">New Car Strategy:</span>
+                        <span class="text-2xl font-black text-blue-400" id="wealthNew63"></span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-300 font-semibold text-sm sm:text-base">CPO Car Strategy:</span>
-                        <span class="text-xl sm:text-2xl font-black text-green-400" id="wealthCpo63"></span>
+                        <span class="text-gray-300 font-semibold">CPO Car Strategy:</span>
+                        <span class="text-2xl font-black text-green-400" id="wealthCpo63"></span>
                     </div>
                 </div>
             </div>
 
+        </div>
+
+        <div class="card no-print">
+            <h2 class="text-2xl font-semibold mb-4">4. Custom Loan Amortization Calculator</h2>
+            <p class="text-gray-600 mb-6">Test specific loan amounts and rates to see how principal and interest break down over time.</p>
+            
+            <form id="loan-form" aria-labelledby="loan-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6">
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700">Loan Amount ($):</label>
+                    <input type="number" id="amount" name="amount" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                </div>
+                <div>
+                    <label for="rate" class="block text-sm font-medium text-gray-700">Interest Rate (%):</label>
+                    <input type="number" id="rate" name="rate" step="0.01" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                </div>
+                <div>
+                    <label for="months" class="block text-sm font-medium text-gray-700">Loan Term (months):</label>
+                    <input type="number" id="months" name="months" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                </div>
+                <div>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">Calculate</button>
+                </div>
+            </form>
+            
+            <div id="results" role="alert" class="mb-6"></div>
+
+            <div id="schedules" class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment #</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Principal</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interest</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Enter loan details above to generate schedule.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <footer class="text-center mt-12 mb-8 text-gray-500 text-sm">
@@ -365,12 +410,12 @@
 
         function initCharts() {
             const ctxNew = document.getElementById('newChart').getContext('2d');
-            newChart = new Chart(ctxNew, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : '#e5e7eb', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 } } } } });
+            newChart = new Chart(ctxNew, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.1 }] }, options: { scales: { y: { grid: { color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : '#e5e7eb', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 } } } } });
 
             const ctxCpo = document.getElementById('cpoChart').getContext('2d');
-            cpoChart = new Chart(ctxCpo, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0 } } } });
+            cpoChart = new Chart(ctxCpo, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.1 }] }, options: { scales: { y: { min: 0 } } } });
 
-            const chartOptions = { plugins: { tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + formatCurrency(context.raw); } } } }, responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } };
+            const chartOptions = { plugins: { tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + formatCurrency(context.raw); } } } }, responsive: true, scales: { x: { stacked: true }, y: { stacked: true } } };
 
             const ctxTransit36 = document.getElementById('transitChart36').getContext('2d');
             transitChart36 = new Chart(ctxTransit36, { type: 'bar', data: { labels: ['New Car (36 Mo)', 'CPO Car (36 Mo)'], datasets: [] }, options: chartOptions });
@@ -411,7 +456,7 @@
             const sim = simulateHYSA(20000, contrib, newPayment, 36);
             
             document.getElementById('newMinBal').innerText = formatCurrency(sim.min);
-            document.getElementById('newMinBal').className = `metric text-lg md:text-2xl ${sim.min < 0 ? 'danger' : 'success'}`;
+            document.getElementById('newMinBal').className = `metric ${sim.min < 0 ? 'danger' : 'success'}`;
             document.getElementById('newFinalCash').innerText = formatCurrency(sim.final);
             document.getElementById('newNetWealth').innerText = formatCurrency(sim.final + newVal63);
             
