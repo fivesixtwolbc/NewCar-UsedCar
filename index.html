@@ -23,6 +23,22 @@
             <p class="text-gray-600 mt-2">Household Vehicle Strategy & Cash Flow Dashboard</p>
         </header>
 
+        <div class="card bg-gray-800 text-white mb-8">
+            <h2 class="text-xl font-bold mb-4 text-gray-100">Global Vehicle Pricing (Adjust to update all simulators)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300">New Car OTD Price: <span id="newPriceVal" class="font-bold text-blue-400">$37,000</span></label>
+                    <input type="range" id="newPriceInput" min="30000" max="45000" step="500" value="37000" class="w-full mt-2 cursor-pointer">
+                    <p class="text-xs text-gray-400 mt-1">2026 Subaru Forester (Premium, Sport, or Hybrid)</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300">CPO Car OTD Price: <span id="cpoPriceVal" class="font-bold text-green-400">$27,000</span></label>
+                    <input type="range" id="cpoPriceInput" min="20000" max="35000" step="500" value="27000" class="w-full mt-2 cursor-pointer">
+                    <p class="text-xs text-gray-400 mt-1">2024/2025 CPO Subaru Forester</p>
+                </div>
+            </div>
+        </div>
+
         <div class="card bg-blue-50 border border-blue-200 mb-8">
             <h2 class="text-xl font-bold text-blue-800 mb-4">Starting Capital Pool (Amex HYSA)</h2>
             <div class="flex flex-col md:flex-row justify-between items-center text-blue-900">
@@ -44,8 +60,8 @@
         </div>
 
         <div class="card">
-            <h2 class="text-2xl font-semibold mb-4">1. New Car: HYSA Payment Hub (36-Month Loan)</h2>
-            <p class="text-gray-600 mb-4">2026 Subaru Forester Sport | $37,000 OTD | 0.9% APR | $0 Down</p>
+            <h2 class="text-2xl font-semibold mb-2">1. New Car: HYSA Payment Hub (36-Month Loan)</h2>
+            <p class="text-gray-600 mb-4">Calculated at 0.9% APR | $0 Down | $20,000 Starting HYSA</p>
             
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="newContribVal" class="font-bold text-blue-600">$550</span></label>
@@ -60,7 +76,7 @@
             <canvas id="newChart" height="100"></canvas>
             
             <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
-                <strong>How the math works:</strong> We start with the $20,000 Amex HYSA earning 3.25% APY. Every month, we add your checking contribution (slider above) to the balance, and then subtract the $1,042.06 car payment. <em>(Maintenance is excluded and paid out of operating cash flow).</em> The chart tracks if your cash balance can survive the heavy 36-month loan period without dropping below zero, before skyrocketing once the car is paid off.
+                <strong>How the math works:</strong> We start with the $20,000 Amex HYSA earning 3.25% APY. Every month, we add your checking contribution to the balance, and then subtract the calculated car payment. <em>(Maintenance is excluded and paid out of operating cash flow).</em> The chart tracks if your cash balance can survive the heavy 36-month loan period without dropping below zero, before skyrocketing once the car is paid off.
             </div>
         </div>
 
@@ -85,11 +101,11 @@
         </div>
 
         <div class="card">
-            <h2 class="text-2xl font-semibold mb-4">2. CPO Car: HYSA Payment Hub (63-Month Loan)</h2>
-            <p class="text-gray-600 mb-4">2024/2025 CPO Forester | $26,500 OTD | 4.24% APR | $10,000 Down</p>
+            <h2 class="text-2xl font-semibold mb-2">2. CPO Car: HYSA Payment Hub (63-Month Loan)</h2>
+            <p class="text-gray-600 mb-4">Calculated at 4.24% APR | $10,000 Down | $10,000 Starting HYSA</p>
             
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-blue-600">$350</span></label>
+                <label class="block text-sm font-medium text-gray-700">Monthly Checking Contribution: <span id="cpoContribVal" class="font-bold text-green-600">$350</span></label>
                 <input type="range" id="cpoContrib" min="300" max="600" step="10" value="350" class="w-full mt-2 cursor-pointer">
             </div>
 
@@ -101,13 +117,13 @@
             <canvas id="cpoChart" height="100"></canvas>
 
             <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-gray-400">
-                <strong>How the math works:</strong> We immediately remove $10,000 from the Amex HYSA to use as a down payment. The remaining $10,000 stays in the account earning 3.25% APY. Every month, we add your checking contribution to the balance, and subtract the much smaller $292.55 car payment. <em>(Maintenance is excluded).</em> Because the payment is lower, the account never risks hitting zero and grows steadily over the 63 months.
+                <strong>How the math works:</strong> We immediately remove $10,000 from the Amex HYSA to use as a down payment. The remaining $10,000 stays in the account earning 3.25% APY. Every month, we add your checking contribution to the balance, and subtract the calculated car payment. <em>(Maintenance is excluded).</em> Because the payment is lower, the account never risks hitting zero and grows steadily over the 63 months.
             </div>
         </div>
 
         <div class="card">
-            <h2 class="text-2xl font-semibold mb-4">3. Total Cost of Transit (63-Month Lifecycle)</h2>
-            <p class="text-gray-600 mb-4">True monthly operating costs disconnected from the HYSA capital strategy. Slide to estimate maintenance, fuel, and insurance.</p>
+            <h2 class="text-2xl font-semibold mb-4">3. Total Cost of Transit (Operating Overhead)</h2>
+            <p class="text-gray-600 mb-6">True operating costs disconnected from the HYSA capital strategy. Slide to estimate maintenance, fuel, and insurance.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                 <div>
@@ -115,36 +131,52 @@
                     <input type="range" id="maintNewInput" min="0" max="2000" step="50" value="750" class="w-full mt-2 cursor-pointer">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Annual Maint (CPO): <span id="maintCpoVal" class="font-bold text-blue-600">$1,150</span></label>
+                    <label class="block text-sm font-medium text-gray-700">Annual Maint (CPO): <span id="maintCpoVal" class="font-bold text-green-600">$1,150</span></label>
                     <input type="range" id="maintCpoInput" min="0" max="3000" step="50" value="1150" class="w-full mt-2 cursor-pointer">
                 </div>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Annual Fuel Cost: <span id="fuelVal" class="font-bold text-blue-600">$1,500</span></label>
+                    <label class="block text-sm font-medium text-gray-700">Annual Fuel Cost: <span id="fuelVal" class="font-bold text-gray-800">$1,500</span></label>
                     <input type="range" id="fuelInput" min="800" max="3000" step="50" value="1500" class="w-full mt-2 cursor-pointer">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Annual Insurance: <span id="insVal" class="font-bold text-blue-600">$1,752</span></label>
+                    <label class="block text-sm font-medium text-gray-700">Annual Insurance: <span id="insVal" class="font-bold text-gray-800">$1,752</span></label>
                     <input type="range" id="insInput" min="1000" max="3000" step="12" value="1752" class="w-full mt-2 cursor-pointer">
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-                <div class="p-4 bg-gray-50 rounded border">
-                    <h3 class="font-bold text-lg mb-2">New Car (Months 1-36)</h3>
-                    <div class="text-3xl font-bold text-gray-800" id="transitNewMonthly"></div>
-                    <div class="text-sm text-gray-500 mt-1">Total out-of-pocket per month</div>
-                    <div class="mt-4 text-sm"><span class="font-semibold">Lifetime (63 mos):</span> <span id="transitNewLifetime"></span></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
+                    <h3 class="font-bold text-blue-900 text-lg border-b border-blue-200 pb-2 mb-3">36-Month Horizon: New Car</h3>
+                    <div class="text-3xl font-black text-gray-800" id="t36NewMonthly"></div>
+                    <div class="text-sm text-gray-500 mb-4">Avg Monthly Out-of-Pocket</div>
+                    <div class="text-sm flex justify-between"><span class="font-semibold text-gray-700">Total 36-Mo Transit:</span> <span id="t36NewTotal" class="font-bold"></span></div>
                 </div>
-                <div class="p-4 bg-gray-50 rounded border">
-                    <h3 class="font-bold text-lg mb-2">CPO Car (Months 1-63)</h3>
-                    <div class="text-3xl font-bold text-gray-800" id="transitCpoMonthly"></div>
-                    <div class="text-sm text-gray-500 mt-1">Total out-of-pocket per month</div>
-                    <div class="mt-4 text-sm"><span class="font-semibold">Lifetime (63 mos):</span> <span id="transitCpoLifetime"></span></div>
+                
+                <div class="p-5 bg-green-50 rounded-xl border border-green-100 shadow-sm">
+                    <h3 class="font-bold text-green-900 text-lg border-b border-green-200 pb-2 mb-3">36-Month Horizon: CPO Car</h3>
+                    <div class="text-3xl font-black text-gray-800" id="t36CpoMonthly"></div>
+                    <div class="text-sm text-gray-500 mb-4">Avg Monthly Out-of-Pocket</div>
+                    <div class="text-sm flex justify-between"><span class="font-semibold text-gray-700">Total 36-Mo Transit:</span> <span id="t36CpoTotal" class="font-bold"></span></div>
+                </div>
+
+                <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 shadow-sm opacity-90">
+                    <h3 class="font-bold text-blue-900 text-lg border-b border-blue-200 pb-2 mb-3">63-Month Horizon: New Car</h3>
+                    <div class="text-3xl font-black text-gray-800" id="t63NewMonthly"></div>
+                    <div class="text-sm text-gray-500 mb-4">Avg Monthly (Blends active & paid-off months)</div>
+                    <div class="text-sm flex justify-between"><span class="font-semibold text-gray-700">Total 63-Mo Transit:</span> <span id="t63NewTotal" class="font-bold"></span></div>
+                </div>
+
+                <div class="p-5 bg-green-50 rounded-xl border border-green-100 shadow-sm opacity-90">
+                    <h3 class="font-bold text-green-900 text-lg border-b border-green-200 pb-2 mb-3">63-Month Horizon: CPO Car</h3>
+                    <div class="text-3xl font-black text-gray-800" id="t63CpoMonthly"></div>
+                    <div class="text-sm text-gray-500 mb-4">Avg Monthly Out-of-Pocket</div>
+                    <div class="text-sm flex justify-between"><span class="font-semibold text-gray-700">Total 63-Mo Transit:</span> <span id="t63CpoTotal" class="font-bold"></span></div>
                 </div>
             </div>
+
             <canvas id="transitChart" height="100"></canvas>
         </div>
 
@@ -198,14 +230,25 @@
     </div>
 
     <script>
-        const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+        const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
-        // --- Simulators 1 & 2 Logic ---
+        // Core Financial Constants
         const hysaApy = 0.0325;
-        const newPayment = 1042.06; const newTerm = 36; const newVal = 16500;
-        const cpoPayment = 292.55; const cpoTerm = 63; const cpoVal = 11500;
+        const newVal = 16500; // Estimated residual value
+        const cpoVal = 11500; // Estimated residual value
+        
+        let newPayment = 0;
+        let cpoPayment = 0;
 
-        // Maintenance removed from HYSA flow, it now just calculates capital vs payment
+        // Loan Calculator Helper
+        function calcLoanPayment(principal, annualRate, months) {
+            if (principal <= 0) return 0;
+            const monthlyRate = (annualRate / 100) / 12;
+            if (monthlyRate === 0) return principal / months;
+            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        }
+
+        // HYSA Simulator
         function simulateHYSA(startCash, contrib, payment, pmtMonths, term = 63) {
             let bal = startCash;
             let minBal = startCash;
@@ -233,13 +276,31 @@
             cpoChart = new Chart(ctxCpo, { type: 'line', data: { labels: Array.from({length: 64}, (_, i) => i), datasets: [{ label: 'HYSA Balance', borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.1 }] }, options: { scales: { y: { min: 0 } } } });
 
             const ctxTransit = document.getElementById('transitChart').getContext('2d');
-            transitChart = new Chart(ctxTransit, { type: 'bar', data: { labels: ['New Car (Active Loan)', 'New Car (Paid Off)', 'CPO Car'], datasets: [] }, options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true } } } });
+            transitChart = new Chart(ctxTransit, { type: 'bar', data: { labels: ['New (Active Loan)', 'New (Paid Off)', 'CPO Car'], datasets: [] }, options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true } } } });
+        }
+
+        // Master Update Function
+        function updateAll() {
+            // 1. Grab Global Prices and calculate payments
+            const newPrice = Number(document.getElementById('newPriceInput').value);
+            const cpoPrice = Number(document.getElementById('cpoPriceInput').value);
+            
+            document.getElementById('newPriceVal').innerText = formatCurrency(newPrice);
+            document.getElementById('cpoPriceVal').innerText = formatCurrency(cpoPrice);
+
+            newPayment = calcLoanPayment(newPrice, 0.9, 36);
+            cpoPayment = calcLoanPayment(cpoPrice - 10000, 4.24, 63); // $10k down
+
+            // 2. Update Simulators
+            updateNew();
+            updateCpo();
+            updateTransit();
         }
 
         function updateNew() {
             const contrib = Number(document.getElementById('newContrib').value);
             document.getElementById('newContribVal').innerText = formatCurrency(contrib);
-            const sim = simulateHYSA(20000, contrib, newPayment, newTerm);
+            const sim = simulateHYSA(20000, contrib, newPayment, 36);
             
             document.getElementById('newMinBal').innerText = formatCurrency(sim.min);
             document.getElementById('newMinBal').className = `metric ${sim.min < 0 ? 'danger' : 'success'}`;
@@ -253,7 +314,7 @@
         function updateCpo() {
             const contrib = Number(document.getElementById('cpoContrib').value);
             document.getElementById('cpoContribVal').innerText = formatCurrency(contrib);
-            const sim = simulateHYSA(10000, contrib, cpoPayment, cpoTerm);
+            const sim = simulateHYSA(10000, contrib, cpoPayment, 63);
             
             document.getElementById('cpoMinBal').innerText = formatCurrency(sim.min);
             document.getElementById('cpoFinalCash').innerText = formatCurrency(sim.final);
@@ -274,21 +335,31 @@
             document.getElementById('maintNewVal').innerText = formatCurrency(maintNew);
             document.getElementById('maintCpoVal').innerText = formatCurrency(maintCpo);
 
-            const mFuel = fuel / 12; const mIns = ins / 12;
-            const mNewMaint = maintNew / 12; const mCpoMaint = maintCpo / 12;
+            // Monthly operating costs
+            const mFuel = fuel / 12; 
+            const mIns = ins / 12;
+            const mNewMaint = maintNew / 12; 
+            const mCpoMaint = maintCpo / 12;
 
-            const newMoActive = newPayment + mFuel + mIns + mNewMaint;
-            const cpoMo = cpoPayment + mFuel + mIns + mCpoMaint;
-
-            document.getElementById('transitNewMonthly').innerText = formatCurrency(newMoActive);
-            document.getElementById('transitCpoMonthly').innerText = formatCurrency(cpoMo);
-
-            const newLifetime = (newPayment * 36) + (mNewMaint * 63) + (mFuel * 63) + (mIns * 63);
-            const cpoLifetime = (cpoPayment * 63) + (mCpoMaint * 63) + (mFuel * 63) + (mIns * 63);
+            // --- 36-Month Calculations ---
+            const t36NewTotal = (newPayment * 36) + (mNewMaint * 36) + (mFuel * 36) + (mIns * 36);
+            const t36CpoTotal = (cpoPayment * 36) + (mCpoMaint * 36) + (mFuel * 36) + (mIns * 36);
             
-            document.getElementById('transitNewLifetime').innerText = formatCurrency(newLifetime);
-            document.getElementById('transitCpoLifetime').innerText = formatCurrency(cpoLifetime);
+            document.getElementById('t36NewMonthly').innerText = formatCurrency(t36NewTotal / 36);
+            document.getElementById('t36NewTotal').innerText = formatCurrency(t36NewTotal);
+            document.getElementById('t36CpoMonthly').innerText = formatCurrency(t36CpoTotal / 36);
+            document.getElementById('t36CpoTotal').innerText = formatCurrency(t36CpoTotal);
 
+            // --- 63-Month Calculations ---
+            const t63NewTotal = (newPayment * 36) + (mNewMaint * 63) + (mFuel * 63) + (mIns * 63);
+            const t63CpoTotal = (cpoPayment * 63) + (mCpoMaint * 63) + (mFuel * 63) + (mIns * 63);
+
+            document.getElementById('t63NewMonthly').innerText = formatCurrency(t63NewTotal / 63);
+            document.getElementById('t63NewTotal').innerText = formatCurrency(t63NewTotal);
+            document.getElementById('t63CpoMonthly').innerText = formatCurrency(t63CpoTotal / 63);
+            document.getElementById('t63CpoTotal').innerText = formatCurrency(t63CpoTotal);
+
+            // Chart Data Breakdown
             transitChart.data.datasets = [
                 { label: 'Car Payment', data: [newPayment, 0, cpoPayment], backgroundColor: '#3b82f6' },
                 { label: 'Fuel', data: [mFuel, mFuel, mFuel], backgroundColor: '#f59e0b' },
@@ -298,9 +369,13 @@
             transitChart.update();
         }
 
-        // Event Listeners for Simulators
+        // Global Event Listeners
+        document.getElementById('newPriceInput').addEventListener('input', updateAll);
+        document.getElementById('cpoPriceInput').addEventListener('input', updateAll);
+        
         document.getElementById('newContrib').addEventListener('input', updateNew);
         document.getElementById('cpoContrib').addEventListener('input', updateCpo);
+        
         document.getElementById('fuelInput').addEventListener('input', updateTransit);
         document.getElementById('insInput').addEventListener('input', updateTransit);
         document.getElementById('maintNewInput').addEventListener('input', updateTransit);
@@ -309,19 +384,10 @@
         // --- Custom Amortization Logic ---
         document.getElementById('loan-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const principal = parseFloat(document.getElementById('amount').value);
             const annualRate = parseFloat(document.getElementById('rate').value);
             const totalPayments = parseFloat(document.getElementById('months').value); 
-
-            let monthlyPayment;
-            const monthlyRate = (annualRate / 100) / 12;
-
-            if (monthlyRate === 0) {
-                monthlyPayment = principal / totalPayments;
-            } else {
-                monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / (Math.pow(1 + monthlyRate, totalPayments) - 1);
-            }
+            let monthlyPayment = calcLoanPayment(principal, annualRate, totalPayments);
 
             document.getElementById('results').innerHTML = `<p class="font-bold text-xl mt-4 text-blue-600 border-l-4 border-blue-600 pl-4">Calculated Monthly Payment: ${formatCurrency(monthlyPayment)}</p>`;
 
@@ -329,10 +395,9 @@
             let tableHtml = '';
 
             for (let i = 1; i <= totalPayments; i++) {
-                let interestPayment = currentBalance * monthlyRate;
+                let interestPayment = currentBalance * ((annualRate / 100) / 12);
                 let principalPayment = monthlyPayment - interestPayment;
                 currentBalance -= principalPayment;
-
                 if (currentBalance < 0.01) currentBalance = 0;
 
                 tableHtml += `
@@ -344,15 +409,12 @@
                     </tr>
                 `;
             }
-
             document.getElementById('schedule-body').innerHTML = tableHtml;
         });
 
         // Initialize Dashboards on load
         initCharts();
-        updateNew();
-        updateCpo();
-        updateTransit();
+        updateAll(); // Triggers the first full calculation pipeline
     </script>
 </body>
 </html>
